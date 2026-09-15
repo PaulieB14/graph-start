@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="The Graph coverage">
+  <rect width="64" height="64" rx="12" fill="#0D0E11"/>
+  <!-- bar lengths are the real coverage of 94 networks: subgraphs 64, substreams 57,
+       firehose 54, Token API 10 -->
+  <g shape-rendering="crispEdges">
+    <rect x="10" y="14" width="30" height="7" rx="1" fill="#A48CFF"/>
+    <rect x="10" y="26" width="27" height="7" rx="1" fill="#E0A05A"/>
+    <rect x="10" y="38" width="25" height="7" rx="1" fill="#5CA8E8"/>
+    <rect x="10" y="50" width="5" height="7" rx="1" fill="#3CC6A4"/>
+  </g>
+</svg>
