@@ -1,0 +1,47 @@
+# Zero to Query — The Graph routing dataset
+
+> Machine-readable answers to: which part of The Graph serves this chain / this contract / this data shape,
+> and does something already exist so I don't rebuild it. Verified 2026-09-14.
+
+WE DO NOT CERTIFY ANYTHING WORKS NOW. These files report what EXISTS and what a single probe saw at the
+stated timestamp. Always run `{ _meta { block { number } } }` against a subgraph yourself before relying
+on it. Lifetime query fees are historical and are NOT a health signal.
+
+## Files
+
+- [routes.json](routes.json): decision rules as data. Evaluate in order, first match wins. Start here.
+- [chains.json](chains.json): 94 networks x subgraphs / substreams / firehose / tokenApi. Registry v0.7.121,
+  Token API coverage overridden from the live API and matched on CAIP-2.
+- [contracts.json](contracts.json): 784 contract addresses -> protocol, chains, and any subgraph indexing
+  them. DEX factories plus catalogued protocols. NOT exhaustive.
+- [catalog.json](catalog.json): 32 subgraphs with IDs, gateway URLs, entity lists, an example query, and a
+  field-level warning where one was observed.
+
+## Typical agent loop
+
+1. Have a contract? Look it up in contracts.json. A hit with subgraphIds means it is already indexed.
+2. No hit, or no contract? Read the chain's services from chains.json.
+3. Evaluate routes.json rules against {chain, goal} and take the first match.
+4. Before using any subgraph from catalog.json, run the freshness probe. Read its fieldWarning first.
+
+## Known field traps
+
+Ranking by `reserveUSD` (Uniswap-V2-like) or `totalValueLockedUSD` (Uniswap-V3-like) returns junk rows.
+Aave's `totalValueLockedUSD` mirrors deposits and is not net of borrows; its `profitUSD` has been wrong by
+~1e6. Details in routes.json -> hardEarnedWarnings.
+
+## Open endpoints needing no key
+
+https://api.pinax.network/v1/networks
+https://api.pinax.network/v1/evm/dexes?network=base
+https://api.pinax.network/v1/polymarket/markets?limit=2
+https://api.pinax.network/v1/hyperliquid/markets?limit=2
+
+## Canonical upstream sources
+
+https://app.pinax.network/docs        Token API docs
+https://api.pinax.network/openapi     Token API OpenAPI (authoritative)
+https://api.pinax.network/SKILL.md    Token API skill file
+https://thegraph.com/explorer         authoritative subgraph search
+https://substreams.dev/chain          Substreams endpoints per chain
+https://thegraph.com/docs/en/substreams/tooling/skills/   Substreams agent skills
